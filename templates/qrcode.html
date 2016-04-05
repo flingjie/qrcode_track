@@ -3,8 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
+    <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="/static/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#generate").click(function(){
+            var value = $("#info").val();
+            var data = {info: value};
+            $.ajax({
+                url: '/',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    console.log("got");
+                    $("#qrcode")[0].src = "data:image/jpeg;base64," + response;
+                }
+            });
+        });
+     });
+    </script>
 </head>
 <body>
-    test
+   <div class="container">
+       <div class="form-horizontal">
+          <div class="form-group">
+              <label for="inputUrl" class="col-lg-2 control-label">请输入二维码链接地址:</label>
+              <div class="col-lg-10">
+                <input type="text" id="info" class="form-control" id="inputUrl" placeholder="请输入要生成的内容">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-10 col-lg-offset-2 text-center">
+                <button id="generate" class="btn btn-primary">生成二维码</button>
+              </div>
+            </div>
+        </div>
+   </div>
+    <div class="text-center">
+        <img id="qrcode" src="" />
+    </div>
 </body>
 </html>
