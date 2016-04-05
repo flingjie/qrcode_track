@@ -5,7 +5,7 @@
 
 基于tornado框架,异步进行重定向.数据最后存入MongoDB中.
 
-idea来自曹大公众号(caoz的梦呓,caozsay),感谢曹大.
+idea来自曹大公众号(caoz的梦呓,caozsay).
 
 ## 使用
 
