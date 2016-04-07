@@ -23,6 +23,8 @@ $(document).ready(function(){
                     var status = response.status;
                     if(status == 1){
                         alert(response.msg);
+                    }else{
+                        windows.location = "/login";
                     }
                 }
             });

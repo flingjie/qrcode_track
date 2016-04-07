@@ -21,6 +21,8 @@ $(document).ready(function(){
                     var status = response.status;
                     if(status == 1){
                         alert(response.msg);
+                    }else{
+                         windows.location = "/";
                     }
                 }
             });
@@ -44,7 +46,7 @@ $(document).ready(function(){
                 </div>
                 <div class="form-group">
                     <button id="login" class="btn btn-primary btn-lg">登录</button>
-                    <button id="try" class="btn btn-primary btn-lg">试玩</button>
+                    <a href="/" class="btn btn-primary btn-lg">试玩</a>
                 </div>
             </form>
             <div>
