@@ -7,7 +7,7 @@ import tornado.web
 from tornado import gen
 from base_hander import RequestHandler
 from constants import OK, ERROR, USER_COLLECTION, STATISTIC_COLLECTION
-from utils import gen_new_url, analyse_client
+from utils import gen_new_url, analyse_client, gen_statistic_url
 
 
 class RegisterHandler(RequestHandler):
@@ -100,9 +100,17 @@ class QRCodeGenerator(RequestHandler):
         o = BytesIO()
         img.save(o, "JPEG")
         s = base64.b64encode(o.getvalue())
-        self.set_header('Content-type', 'image/jpg')
-        self.set_header('Content-length', len(s))
-        self.write(s)
+
+        # todo
+        img = qrcode.make(gen_statistic_url("test"))
+        o = BytesIO()
+        img.save(o, "JPEG")
+        s2 = base64.b64encode(o.getvalue())
+
+        self.write({
+            "qrcode": s.decode('utf-8'),
+            "statistic": s2.decode('utf-8')
+        })
 
 
 class TrackHandler(RequestHandler):

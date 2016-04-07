@@ -2,7 +2,7 @@
 from qqwry import QQwry
 from datetime import datetime
 from ua_parser import user_agent_parser
-from settings import HOST
+from settings import TRACK_URL, STATISTIC_URL
 from urllib.parse import quote
 
 
@@ -30,4 +30,8 @@ def get_loc_from_ip(ip):
 def gen_new_url(url):
     if not url.startswith("http:"):
         url = "http://{}".format(url)
-    return "{}{}".format(HOST, quote(url))
+    return "{}{}".format(TRACK_URL, quote(url))
+
+
+def gen_statistic_url(user_id):
+    return "{}{}".format(STATISTIC_URL, quote(user_id))
