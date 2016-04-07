@@ -1,0 +1,28 @@
+
+.form-page {
+  width: 380px;
+  padding: 8% 0 0;
+  margin: auto;
+  background: #C1DBF2; /* fallback for old browsers */
+  background: -webkit-linear-gradient(right, #C1DBF2, #D7E7F4);
+  background: -moz-linear-gradient(right, #C1DBF2, #D7E7F4);
+  background: -o-linear-gradient(right, #C1DBF2, #D7E7F4);
+  background: linear-gradient(to left, #C1DBF2, #D7E7F4);
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.center-form {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 380px;
+  margin: 0 auto 100px;
+  margin-top: 3px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+

@@ -4,19 +4,13 @@ from datetime import datetime
 from ua_parser import user_agent_parser
 from settings import HOST
 from urllib.parse import quote
-from settings import MONGODB_HOST, MONGODB_PORT, DATABASE, COLLECTION
-from pymongo import MongoClient
 
 
 q = QQwry()
 q.load_file('qqwry.dat', loadindex=False)
 
-client = MongoClient(MONGODB_HOST, MONGODB_PORT)
-db = client[DATABASE]
-collection = db[COLLECTION]
 
-
-def analyse_client(ip, ua):
+def analyse_client(ip, ua, collection):
     data = {}
     data['time'] = datetime.now()
     data['location'] = get_loc_from_ip(ip)

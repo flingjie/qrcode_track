@@ -1,47 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Test</title>
-    <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <script src="/static/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function(){
-        $("#generate").click(function(){
-            var value = $("#info").val();
-            var data = {info: value};
-            $.ajax({
-                url: '/',
-                type: 'POST',
-                data: data,
-                success: function (response) {
-                    console.log("got");
-                    $("#qrcode")[0].src = "data:image/jpeg;base64," + response;
-                }
-            });
+{% extends "base.html" %}
+{% block content %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#generate").click(function(){
+        var value = $("#info").val();
+        var data = {
+            _xsrf: getCookie("_xsrf"),
+            info: value
+        };
+        $.ajax({
+            url: '/',
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                $("#qrcode")[0].src = "data:image/jpeg;base64," + response.qrcode;
+                $("#statistic")[0].src = "data:image/jpeg;base64," + response.statistic;
+            }
         });
-     });
-    </script>
-</head>
-<body>
-   <div class="container">
-       <div class="form-horizontal">
-          <div class="form-group">
-              <label for="inputUrl" class="col-lg-2 control-label">请输入二维码链接地址:</label>
-              <div class="col-lg-10">
-                <input type="text" id="info" class="form-control" id="inputUrl" placeholder="请输入要生成的内容">
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-lg-10 col-lg-offset-2 text-center">
-                <button id="generate" class="btn btn-primary">生成二维码</button>
-              </div>
-            </div>
+    });
+ });
+</script>
+{% include "navbar.html" %}
+<div class="container">
+   <form class="form-horizontal">
+       {% module xsrf_form_html() %}
+      <div class="form-group">
+          {% module xsrf_form_html() %}
+          <div class="text-center">
+            <h3>一钉</h3>
+            <h4>帮你追踪二维码去哪了</h4>
+          </div>
+          <div class="col-lg-10">
+            <input type="text" id="info" class="form-control" id="inputUrl" placeholder="点击输入短链接">
+          </div>
         </div>
-   </div>
-    <div class="text-center">
-        <img id="qrcode" src="" />
-    </div>
-</body>
-</html>
+        <div class="form-group">
+          <div class="col-lg-10 col-lg-offset-2 text-center">
+            <button id="generate" class="btn btn-primary">生成二维码</button>
+          </div>
+        </div>
+    </form>
+</div>
+<div class="text-center">
+    <img id="qrcode" src="" />
+    <img id="statistic" src="" />
+</div>
+{% end %}

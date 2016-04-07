@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+ <script type="text/javascript">
+$(document).ready(function(){
+    $("#login").click(function(){
+        var phone_number = $("#phone").val();
+        var password = $("#password").val();
+        if(false){
+            alert("手机号和密码不能为空!");
+        }else{
+            var data = {
+                _xsrf: getCookie("_xsrf"),
+                phone: phone_number,
+                pwd: password
+            };
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    var status = response.status;
+                    if(status == 1){
+                        alert(response.msg);
+                    }
+                }
+            });
+        }
+    });
+ });
+</script>
+{% include "navbar.html" %}
+<body class="form-body">
+    <form class="container">
+        {% module xsrf_form_html() %}
+        <div class="center-form">
+            <form class="form-horizontal">
+                <h3>一钉</h3>
+                <h4>帮你追踪二维码去哪了</h4>
+                <div class="form-group">
+                    <input type="number" id="phone" class="form-control" placeholder="输入手机号">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" class="form-control" placeholder="输入密码">
+                </div>
+                <div class="form-group">
+                    <button id="login" class="btn btn-primary btn-lg">登录</button>
+                    <button id="try" class="btn btn-primary btn-lg">试玩</button>
+                </div>
+            </form>
+            <div>
+                或 <a href="/register">注册</a>
+            </div>
+        </div>
+    </form>
+</body>
+{% end %}

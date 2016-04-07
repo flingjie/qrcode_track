@@ -11,4 +11,7 @@ HOST = "http://192.168.10.58:8000/track?url="
 MONGODB_HOST = "localhost"
 MONGODB_PORT = 27017
 DATABASE = "qrcode"
-COLLECTION = "client"
+
+DEBUG = True
+SECRET_KEY="keep#@!#secretabcdefgh#@!#@#@$%"
+XSRF_FLAG = True
