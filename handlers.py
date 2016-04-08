@@ -7,9 +7,10 @@ import tornado.web
 from tornado import gen
 from base_hander import RequestHandler
 from constants import *
-from utils import gen_new_url, analyse_client, gen_statistic_url
+from utils import gen_new_url, analyse_client, gen_statistic_url, add_http
 from PIL import Image
-import zbar
+from urllib import unquote
+# import zbar
 
 
 class RegisterHandler(RequestHandler):
@@ -96,10 +97,11 @@ class QRCodeGenerator(RequestHandler):
 
     @tornado.gen.coroutine
     def post(self):
+        name = self.request.arguments.get('name')[0]
         post_type = self.request.arguments.get('type')[0]
         if int(post_type) == LINK_TYPE:
             data = self.request.arguments.get('info')[0]
-            url = data.decode("utf-8")
+            url = add_http(data.decode("utf-8"))
         else:
             b64img = self.request.arguments.get('image')[0]
             img = BytesIO(base64.b64decode(b64img))
@@ -111,14 +113,27 @@ class QRCodeGenerator(RequestHandler):
             image = zbar.Image(width, height, 'Y800', raw)
             scanner.scan(image)
             for symbol in image:
-                url = symbol.data
+                url = add_http(symbol.data)
+
+        cur_user = self.get_current_user()
+        if cur_user:
+            users = self.db[USER_COLLECTION]
+            users.update({'phone': cur_user['phone']}, {'$addToSet': {'qrcode': url}})
+        stat_col = self.db[STATISTIC_COLLECTION]
+        if not stat_col.find_one({'url': url}):
+            stat_col.insert({
+                'name': name,
+                'url': url,
+                'visit': []
+            })
+        else:
+            stat_col.update({'url': url}, {"$set": {'name': name}})
         img = qrcode.make(gen_new_url(url))
         o = BytesIO()
         img.save(o, "JPEG")
         s = base64.b64encode(o.getvalue())
 
-        # todo
-        img = qrcode.make(gen_statistic_url("test"))
+        img = qrcode.make(gen_statistic_url(url))
         o = BytesIO()
         img.save(o, "JPEG")
         s2 = base64.b64encode(o.getvalue())
@@ -132,10 +147,11 @@ class QRCodeGenerator(RequestHandler):
 class TrackHandler(RequestHandler):
     @gen.coroutine
     def get(self):
-        url = self.get_argument("url", default="/")
+        url = unquote(self.get_argument("url", default="/"))
 
         def do_track(callback):
-            analyse_client(self.request.remote_ip,
+            analyse_client(url,
+                           self.request.remote_ip,
                            self.request.headers["user-agent"],
                            self.db[STATISTIC_COLLECTION])
             callback()
@@ -147,4 +163,42 @@ class StatisticHandler(RequestHandler):
     @tornado.web.authenticated
     @gen.coroutine
     def get(self):
-        self.render("statistic.html")
+        qrcode_list = self.current_user['qrcode']
+        data = []
+        for i in qrcode_list:
+            col = self.db[STATISTIC_COLLECTION]
+            q = col.find_one({'url': i})
+            if q:
+                data.append([q['url'], q['name'], len(q['visit'])])
+            else:
+                data.append([i, '', 0])
+        self.render("statistic.html", data=data)
+
+
+class DetailHandler(RequestHandler):
+    @gen.coroutine
+    def get(self):
+        url = self.get_argument("url", default="/")
+        col = self.db[STATISTIC_COLLECTION]
+        qrcode = col.find_one({'url': url})
+        if qrcode:
+            data = {
+                'url': qrcode['url'],
+                'name': qrcode['name'],
+                'visit': len(qrcode['visit']),
+                'location': {},
+                'time': {},
+                'client': {}
+            }
+            for i in qrcode['visit']:
+                loc = i['location']['loc'][1]
+                data['location'].setdefault(loc, 0)
+                data['location'][loc] += 1
+
+                client = i['client']['device']['model']
+                data['client'].setdefault(client, 0)
+                data['client'][client] += 1
+
+            self.render("detail.html", data=data)
+        else:
+            self.render("404.html")

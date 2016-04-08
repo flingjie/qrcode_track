@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
- {% include "user_navbar.html" %}
- to do
+{% include "user_navbar.html" %}
+<div class="container">
+ <table class="table table-striped table-hover ">
+  <thead>
+    <tr>
+      <th>地址</th>
+      <th>名称</th>
+      <th>访问数</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in data %}
+    <tr>
+      <td><a href="/detail?url={{ d[0] }}">{{ d[0] }}</a></td>
+      <td>{{ d[1] }}</td>
+      <td>{{ d[2] }}</td>
+    </tr>
+    {% end %}
+  </tbody>
+</table>
+</div>
 {% end %}

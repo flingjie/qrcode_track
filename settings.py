@@ -6,9 +6,9 @@ BASE_PATH = os.path.realpath(os.path.dirname(__file__))
 TEMPLATE_PATH = os.path.join(BASE_PATH, "templates")
 STATIC_PATH = os.path.join(BASE_PATH, "static")
 
-HOST = "http://192.168.10.58:8000"
+HOST = "http://192.168.10.210:8000"
 TRACK_URL = "{}/track?url=".format(HOST)
-STATISTIC_URL = "{}/statistic?key=".format(HOST)
+STATISTIC_URL = "{}/detail?url=".format(HOST)
 
 MONGODB_HOST = "localhost"
 MONGODB_PORT = 27017
