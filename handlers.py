@@ -9,6 +9,7 @@ from base_hander import RequestHandler
 from constants import *
 from utils import gen_new_url, analyse_client, gen_statistic_url
 from PIL import Image
+import zbar
 
 
 class RegisterHandler(RequestHandler):
