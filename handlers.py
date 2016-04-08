@@ -6,8 +6,9 @@ import qrcode
 import tornado.web
 from tornado import gen
 from base_hander import RequestHandler
-from constants import OK, ERROR, USER_COLLECTION, STATISTIC_COLLECTION
+from constants import *
 from utils import gen_new_url, analyse_client, gen_statistic_url
+from PIL import Image
 
 
 class RegisterHandler(RequestHandler):
@@ -65,7 +66,7 @@ class LoginHandler(RequestHandler):
             user = users.find_one({
                 'phone': phone
             })
-            if phone and password and bcrypt.hashpw(password, user['password']) == user['password']:
+            if user and phone and password and bcrypt.hashpw(password, user['password'].encode("utf-8")) == user['password']:
                 self.set_secure_cookie("user", user["phone"])
             else:
                 self.write({
@@ -94,8 +95,24 @@ class QRCodeGenerator(RequestHandler):
 
     @tornado.gen.coroutine
     def post(self):
-        data = self.request.arguments.get('info')[0]
-        url = data.decode("utf-8")
+        post_type = self.request.arguments.get('type')[0]
+        if int(post_type) == LINK_TYPE:
+            data = self.request.arguments.get('info')[0]
+            url = data.decode("utf-8")
+        else:
+            b64img = self.request.arguments.get('image')[0]
+            img = BytesIO(base64.b64decode(b64img))
+            scanner = zbar.ImageScanner()
+            scanner.parse_config('enable')
+            pil = Image.open(img).convert('L')
+            width, height = pil.size
+            raw = pil.tobytes()
+            image = zbar.Image(width, height, 'Y800', raw)
+            scanner.scan(image)
+            for symbol in image:
+                print(symbol.type)
+                print(symbol.data)
+                url = symbol.data
         img = qrcode.make(gen_new_url(url))
         o = BytesIO()
         img.save(o, "JPEG")

@@ -1,7 +1,9 @@
 amqp==1.4.9
 anyjson==0.3.3
 appnope==0.1.0
+bcrypt==2.0.0
 billiard==3.3.0.23
+cffi==1.5.2
 colorama==0.3.7
 decorator==4.0.9
 gnureadline==6.3.3
@@ -14,6 +16,7 @@ pexpect==4.0.1
 pickleshare==0.6
 Pillow==3.2.0
 ptyprocess==0.5.1
+pycparser==2.14
 pymongo==2.8
 pytz==2016.3
 qqwry-py3==1.0.6
