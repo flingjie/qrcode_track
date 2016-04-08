@@ -111,8 +111,6 @@ class QRCodeGenerator(RequestHandler):
             image = zbar.Image(width, height, 'Y800', raw)
             scanner.scan(image)
             for symbol in image:
-                print(symbol.type)
-                print(symbol.data)
                 url = symbol.data
         img = qrcode.make(gen_new_url(url))
         o = BytesIO()
