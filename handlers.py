@@ -10,7 +10,7 @@ from constants import *
 from utils import gen_new_url, analyse_client, gen_statistic_url, add_http
 from PIL import Image
 from urllib import unquote
-# import zbar
+import zbar
 
 
 class RegisterHandler(RequestHandler):
