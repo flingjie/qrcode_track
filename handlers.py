@@ -11,6 +11,10 @@ from utils import gen_new_url, analyse_client, gen_statistic_url, add_http, send
 from PIL import Image
 from urllib import unquote
 import zbar
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+from StringIO import StringIO
 
 
 class RegisterHandler(RequestHandler):
@@ -186,22 +190,55 @@ class DetailHandler(RequestHandler):
                 'url': qrcode['url'],
                 'name': qrcode['name'],
                 'visit': len(qrcode['visit']),
+                'location': "",
+                'time': "",
+                'client': ""
+            }
+
+            s = {
                 'location': {},
                 'time': {},
                 'client': {}
             }
             for i in qrcode['visit']:
                 loc = i['location']['loc'][1]
-                data['location'].setdefault(loc, 0)
-                data['location'][loc] += 1
+                s['location'].setdefault(loc, 0)
+                s['location'][loc] += 1
 
                 client = i['client']['device']['model']
-                data['client'].setdefault(client, 0)
-                data['client'][client] += 1
+                s['client'].setdefault(client, 0)
+                s['client'][client] += 1
 
                 hour = i['time'].hour
-                data['time'].setdefault(hour, 0)
-                data['time'][hour] += 1
+                s['time'].setdefault(hour, 0)
+                s['time'][hour] += 1
+
+            plt.figure()
+            plt.pie(s['location'].values(), labels=s['location'].keys())
+
+            img = StringIO()
+            plt.savefig(img, format="png")
+            img.seek(0)
+            loc_url = base64.b64encode(img.getvalue())
+            data['location'] = loc_url
+
+            plt.figure()
+            plt.pie([unicode(i) for i in s['client'].values()], labels=s['client'].keys())
+
+            img = StringIO()
+            plt.savefig(img, format="png")
+            img.seek(0)
+            client_url = base64.b64encode(img.getvalue())
+            data['client'] = client_url
+
+            plt.figure()
+            plt.pie(s['time'].values(), labels=s['time'].keys())
+
+            img = StringIO()
+            plt.savefig(img, format="png")
+            img.seek(0)
+            time_url = base64.b64encode(img.getvalue())
+            data['time'] = time_url
 
             self.render("detail.html", data=data)
         else:
