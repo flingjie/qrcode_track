@@ -199,6 +199,10 @@ class DetailHandler(RequestHandler):
                 data['client'].setdefault(client, 0)
                 data['client'][client] += 1
 
+                hour = i['time'].hour
+                data['time'].setdefault(hour, 0)
+                data['time'][hour] += 1
+
             self.render("detail.html", data=data)
         else:
             self.render("404.html")
