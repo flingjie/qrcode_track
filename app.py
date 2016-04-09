@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from handlers import (QRCodeGenerator, TrackHandler,
                       RegisterHandler, LoginHandler,
                       StatisticHandler, LogoutHandler,
-                      DetailHandler)
+                      DetailHandler, SmsHandler)
 from settings import *
 
 
@@ -19,6 +19,7 @@ def make_app():
         (r"/logout", LogoutHandler),
         (r"/statistic", StatisticHandler),
         (r"/detail", DetailHandler),
+        (r"/send_sms", SmsHandler),
     ]
     client = MongoClient(MONGODB_HOST, MONGODB_PORT)
     db = client[DATABASE]

@@ -7,10 +7,10 @@ import tornado.web
 from tornado import gen
 from base_hander import RequestHandler
 from constants import *
-from utils import gen_new_url, analyse_client, gen_statistic_url, add_http
+from utils import gen_new_url, analyse_client, gen_statistic_url, add_http, send_msg
 from PIL import Image
 from urllib import unquote
-import zbar
+# import zbar
 
 
 class RegisterHandler(RequestHandler):
@@ -206,3 +206,19 @@ class DetailHandler(RequestHandler):
             self.render("detail.html", data=data)
         else:
             self.render("404.html")
+
+
+class SmsHandler(RequestHandler):
+    @gen.coroutine
+    def post(self):
+        phone = self.get_argument("phone")
+        if phone:
+            send_msg(phone)
+            self.write({
+                "status": OK
+            })
+        else:
+            self.write({
+                "status": ERROR,
+                "msg": "手机号不能为空"
+            })

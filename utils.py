@@ -4,7 +4,8 @@ from ua_parser import user_agent_parser
 from settings import TRACK_URL, STATISTIC_URL
 from urllib import quote
 from datetime import datetime
-import top.api
+import json
+from alidayu import AlibabaAliqinFcSmsNumSendRequest
 
 q = QQwry('qqwry.dat')
 
@@ -51,11 +52,19 @@ def gen_statistic_url(url):
 
 
 def send_msg(phone):
-    req = top.api.OpenSmsSendvercodeRequest()
-    req.set_app_info(top.appinfo("23205422", "3684dc7f4fe34862c13c8d3a86052e24"))
-    req.send_ver_code_request = ""
+    req = AlibabaAliqinFcSmsNumSendRequest(u"23205423", u"7164357b0dd4b36699a4e433d4979313")
+    req.extend = u"123456"
+    req.sms_type = u"normal"
+    req.sms_free_sign_name = u"阿里大鱼"
+    params = {
+        u"code": 123133,
+        u"product": u"yiding"
+    }
+    req.sms_param = json.dumps(params)
+    req.rec_num = phone
+    req.sms_template_code = u"SMS_5410290"
     try:
-        resp= req.getResponse()
+        resp = req.getResponse()
         print(resp)
     except Exception,e:
         print(e)
