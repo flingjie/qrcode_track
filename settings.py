@@ -7,6 +7,7 @@ TEMPLATE_PATH = os.path.join(BASE_PATH, "templates")
 STATIC_PATH = os.path.join(BASE_PATH, "static")
 
 HOST = "http://192.168.10.210:8000"
+# HOST = "http://jiankang110.cn"
 TRACK_URL = "{}/track?url=".format(HOST)
 STATISTIC_URL = "{}/detail?url=".format(HOST)
 
